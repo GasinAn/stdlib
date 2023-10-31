@@ -75,10 +75,6 @@ module stdlib_string_type
             logical(lk), intent(in) :: val
             type(string_type) :: new
         end function new_string_from_logical_lk
-        elemental module function new_string_from_logical_c_bool(val) result(new)
-            logical(c_bool), intent(in) :: val
-            type(string_type) :: new
-        end function new_string_from_logical_c_bool
     end interface string_type        
 
     !> Returns the length of the character sequence without trailing spaces
@@ -691,9 +687,11 @@ contains
     !> No output
     elemental subroutine move_string_string(from, to)
         type(string_type), intent(inout) :: from
-        type(string_type), intent(out) :: to
+        type(string_type), intent(inout) :: to
+        character(:), allocatable :: tmp
 
-        call move_alloc(from%raw, to%raw)
+        call move_alloc(from%raw, tmp)
+        call move_alloc(tmp, to%raw)
 
     end subroutine move_string_string
 
